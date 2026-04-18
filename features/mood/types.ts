@@ -12,7 +12,7 @@ export interface MoodEntry {
 
 export interface CreateMoodEntryInput {
   userId: string;
-  score: number;
+  moodScore: number;
   note?: string;
   entryDate?: Date;
 }

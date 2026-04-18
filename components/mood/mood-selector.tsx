@@ -15,13 +15,17 @@ export function MoodSelector() {
   async function handleSubmit() {
     if (selectedScore === null) return;
 
-    const result = await submitMood(selectedScore);
-    setSuccessMessage(
-      result.wasUpdated
-        ? "Updated today's mood entry successfully."
-        : "Logged today's mood entry successfully.",
-    );
-    router.refresh();
+    try {
+      const result = await submitMood(selectedScore);
+      setSuccessMessage(
+        result.wasUpdated
+          ? "Updated today's mood entry successfully."
+          : "Logged today's mood entry successfully.",
+      );
+      router.refresh();
+    } catch {
+      setSuccessMessage(null);
+    }
   }
 
   return (

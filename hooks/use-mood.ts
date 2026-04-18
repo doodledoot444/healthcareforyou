@@ -9,11 +9,17 @@ interface MoodApiPayload {
   streak: MoodStreakSnapshot;
 }
 
+interface MoodApiResponse<T> {
+  success: boolean;
+  data: T | null;
+  error: string | null;
+}
+
 async function fetchMoodPayload(): Promise<MoodApiPayload> {
   const response = await fetch("/api/mood?days=60", { cache: "no-store" });
-  const result = (await response.json()) as { data?: MoodApiPayload; error?: string };
+  const result = (await response.json()) as MoodApiResponse<MoodApiPayload>;
 
-  if (!response.ok || !result.data) {
+  if (!response.ok || !result.success || !result.data) {
     throw new Error(result.error ?? "Failed to load mood entries.");
   }
 
@@ -60,12 +66,12 @@ export function useMood() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ score, note }),
+        body: JSON.stringify({ moodScore: score, note }),
       });
 
-      const result = (await response.json()) as { data?: CreateMoodEntryResult; error?: string };
+      const result = (await response.json()) as MoodApiResponse<CreateMoodEntryResult>;
 
-      if (!response.ok || !result.data) {
+      if (!response.ok || !result.success || !result.data) {
         throw new Error(result.error ?? "Mood submission failed.");
       }
 

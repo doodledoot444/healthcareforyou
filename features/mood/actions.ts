@@ -5,6 +5,13 @@ import { updateMoodStreak } from "@/features/streak/service";
 import type { CreateMoodEntryInput, CreateMoodEntryResult, MoodEntry } from "./types";
 import { assertValidMoodScore, normalizeToUtcStartOfDay, scoreToMood } from "./utils";
 
+export class MoodEntryValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "MoodEntryValidationError";
+  }
+}
+
 function toMoodEntry(entity: {
   id: string;
   userId: string;
@@ -25,12 +32,20 @@ function toMoodEntry(entity: {
 }
 
 export async function createMoodEntry(input: CreateMoodEntryInput): Promise<CreateMoodEntryResult> {
-  const score = assertValidMoodScore(input.score);
-  const entryDate = normalizeToUtcStartOfDay(input.entryDate ?? new Date());
-
   if (!input.userId?.trim()) {
-    throw new Error("userId is required to create a mood entry.");
+    throw new MoodEntryValidationError("userId is required to create a mood entry.");
   }
+
+  let score: number;
+
+  try {
+    score = assertValidMoodScore(input.moodScore);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Mood score validation failed.";
+    throw new MoodEntryValidationError(message);
+  }
+
+  const entryDate = normalizeToUtcStartOfDay(input.entryDate ?? new Date());
 
   try {
     const existing = await db.moodEntry.findUnique({
@@ -70,6 +85,10 @@ export async function createMoodEntry(input: CreateMoodEntryInput): Promise<Crea
       wasUpdated: Boolean(existing),
     };
   } catch (error) {
+    if (error instanceof MoodEntryValidationError) {
+      throw error;
+    }
+
     console.error("Failed to persist mood entry", error);
     throw error;
   }

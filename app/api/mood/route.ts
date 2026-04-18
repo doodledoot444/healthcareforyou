@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createMoodEntry } from "@/features/mood/actions";
+import { createMoodEntry, MoodEntryValidationError } from "@/features/mood/actions";
 import { getLatestMoodEntry, getMoodStreakSnapshot, getRecentMoods } from "@/features/mood/queries";
 import { DEFAULT_DEMO_USER_ID } from "@/lib/constants";
 
@@ -7,43 +7,103 @@ function resolveUserId(request: Request): string {
   return request.headers.get("x-user-id")?.trim() || DEFAULT_DEMO_USER_ID;
 }
 
+interface MoodPostBody {
+  moodScore?: number;
+  score?: number;
+  note?: string;
+}
+
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const daysParam = Number(url.searchParams.get("days") ?? 30);
-  const userId = resolveUserId(request);
+  try {
+    const url = new URL(request.url);
+    const daysParam = Number(url.searchParams.get("days") ?? 7);
+    const userId = resolveUserId(request);
 
-  const [entries, latestEntry, streak] = await Promise.all([
-    getRecentMoods(userId, Number.isFinite(daysParam) ? daysParam : 30),
-    getLatestMoodEntry(userId),
-    getMoodStreakSnapshot(userId),
-  ]);
+    const [entries, latestEntry, streak] = await Promise.all([
+      getRecentMoods(userId, Number.isFinite(daysParam) ? daysParam : 7),
+      getLatestMoodEntry(userId),
+      getMoodStreakSnapshot(userId),
+    ]);
 
-  return NextResponse.json({
-    data: {
-      entries,
-      latestEntry,
-      streak,
-    },
-  });
+    return NextResponse.json({
+      success: true,
+      data: {
+        entries,
+        latestEntry,
+        streak,
+      },
+      error: null,
+    });
+  } catch (error) {
+    console.error("Unexpected mood GET error", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: "Failed to load mood entries.",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { score?: number; note?: string };
-  const userId = resolveUserId(request);
-
-  if (typeof body.score !== "number") {
-    return NextResponse.json({ error: "score is required" }, { status: 400 });
-  }
-
   try {
+    const body = (await request.json()) as MoodPostBody;
+    const userId = resolveUserId(request);
+    const moodScore = typeof body.moodScore === "number" ? body.moodScore : body.score;
+
+    if (typeof moodScore !== "number") {
+      console.warn("Mood submission validation error", { reason: "moodScore missing" });
+
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: "moodScore is required.",
+        },
+        { status: 400 },
+      );
+    }
+
     const data = await createMoodEntry({
       userId,
-      score: body.score,
+      moodScore,
       note: body.note,
     });
-    return NextResponse.json({ data }, { status: data.wasUpdated ? 200 : 201 });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data,
+        error: null,
+      },
+      { status: data.wasUpdated ? 200 : 201 },
+    );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to create mood entry.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    if (error instanceof MoodEntryValidationError) {
+      console.warn("Mood submission validation error", { message: error.message });
+
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: error.message,
+        },
+        { status: 400 },
+      );
+    }
+
+    console.error("Unexpected mood POST error", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: "Failed to create mood entry.",
+      },
+      { status: 500 },
+    );
   }
 }
