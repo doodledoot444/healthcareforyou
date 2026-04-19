@@ -1,9 +1,16 @@
 import { evaluateAchievements } from "@/features/achievements/service";
 import { getRecentMoods } from "@/features/mood/queries";
-import { DEFAULT_DEMO_USER_ID } from "@/lib/constants";
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function AchievementsPage() {
-  const moods = await getRecentMoods(DEFAULT_DEMO_USER_ID, 60);
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  const moods = await getRecentMoods(currentUser.id, 60);
   const achievements = evaluateAchievements(moods);
 
   return (

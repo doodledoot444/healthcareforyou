@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { createMoodEntry, MoodEntryValidationError } from "@/features/mood/actions";
 import { getLatestMoodEntry, getMoodStreakSnapshot, getRecentMoods } from "@/features/mood/queries";
-import { DEFAULT_DEMO_USER_ID } from "@/lib/constants";
-
-function resolveUserId(request: Request): string {
-  return request.headers.get("x-user-id")?.trim() || DEFAULT_DEMO_USER_ID;
-}
+import { getCurrentUser } from "@/lib/auth";
 
 interface MoodPostBody {
   moodScore?: number;
@@ -15,9 +11,22 @@ interface MoodPostBody {
 
 export async function GET(request: Request) {
   try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
+
     const url = new URL(request.url);
     const daysParam = Number(url.searchParams.get("days") ?? 7);
-    const userId = resolveUserId(request);
+    const userId = currentUser.id;
 
     const [entries, latestEntry, streak] = await Promise.all([
       getRecentMoods(userId, Number.isFinite(daysParam) ? daysParam : 7),
@@ -50,8 +59,21 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: "Unauthorized",
+        },
+        { status: 401 },
+      );
+    }
+
     const body = (await request.json()) as MoodPostBody;
-    const userId = resolveUserId(request);
+    const userId = currentUser.id;
     const moodScore = typeof body.moodScore === "number" ? body.moodScore : body.score;
 
     if (typeof moodScore !== "number") {

@@ -10,6 +10,3 @@ export const TRACKING_WINDOW_DAYS = 60;
 
 export const MOOD_SCORE_MIN = 1;
 export const MOOD_SCORE_MAX = 5;
-
-// Replace this fallback when real auth session identity is integrated.
-export const DEFAULT_DEMO_USER_ID = "demo-user";

@@ -1,10 +1,17 @@
 import { MoodSelector } from "@/components/mood/mood-selector";
 import { MoodCard } from "@/components/mood/mood-card";
 import { getLatestMoodEntry, getMoodStreakSnapshot, getRecentMoods } from "@/features/mood/queries";
-import { DEFAULT_DEMO_USER_ID } from "@/lib/constants";
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function DashboardHomePage() {
-  const userId = DEFAULT_DEMO_USER_ID;
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  const userId = currentUser.id;
   const [recentMoods, latestMood, streak] = await Promise.all([
     getRecentMoods(userId, 7),
     getLatestMoodEntry(userId),

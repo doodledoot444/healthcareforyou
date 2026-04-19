@@ -1,9 +1,16 @@
 import { MoodChart } from "@/components/mood/mood-chart";
 import { getRecentMoods } from "@/features/mood/queries";
-import { DEFAULT_DEMO_USER_ID } from "@/lib/constants";
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function ProgressPage() {
-  const moods = await getRecentMoods(DEFAULT_DEMO_USER_ID, 60);
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  const moods = await getRecentMoods(currentUser.id, 60);
 
   return (
     <section className="space-y-6">
