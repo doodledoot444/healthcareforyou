@@ -1,78 +1,106 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
+import { AUTH_REDIRECT_PATH } from "@/features/auth/constants";
+import { signInWithCredentials } from "@/features/auth/client";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (!result || result.error) {
-        setError("Invalid email or password.");
+      if (isSubmitting) {
         return;
       }
 
-      router.push("/");
-      router.refresh();
-    } catch {
-      setError("Sign in failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+      setIsSubmitting(true);
+      setError(null);
+
+      try {
+        const result = await signInWithCredentials(email, password);
+
+        if (!result || result.error) {
+          setError("Invalid email or password.");
+          return;
+        }
+
+        window.location.assign(result.url ?? AUTH_REDIRECT_PATH);
+      } catch {
+        setError("Sign in failed. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [email, isSubmitting, password],
+  );
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-16">
-      <h1 className="text-3xl font-semibold text-zinc-900">Welcome back</h1>
-      <p className="mt-2 text-zinc-600">Sign in to continue your health journey.</p>
+    <main className="flex flex-1 items-center justify-center bg-gradient-to-b from-emerald-50 via-cyan-50 to-white px-4 py-10 sm:px-6 sm:py-14">
+      <section className="w-full max-w-md rounded-2xl border border-emerald-100 bg-white/95 p-6 shadow-sm backdrop-blur sm:p-8">
+        <div className="mb-6 space-y-2">
+          <p className="inline-flex rounded-xl bg-emerald-100 px-3 py-1 text-xs font-semibold tracking-wide text-emerald-700">
+            Joyful Health Tracker
+          </p>
+          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Welcome back</h1>
+          <p className="text-sm text-slate-600">Sign in to continue your daily wellness check-ins.</p>
+        </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4 rounded-2xl border border-zinc-200 bg-white p-6">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Email"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2"
-        />
-        <input
-          type="password"
-          required
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Password"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2"
-        />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full rounded-lg bg-teal-600 px-4 py-2 font-medium text-white hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {isSubmitting ? "Signing In..." : "Sign In"}
-        </button>
-        {error ? <p className="text-sm text-rose-700">{error}</p> : null}
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-emerald-300 focus:bg-white"
+            />
+          </div>
 
-      <p className="mt-4 text-sm text-zinc-600">
-        New here? <Link href="/register" className="font-semibold text-teal-700">Create an account</Link>
-      </p>
+          <div className="space-y-1.5">
+            <label htmlFor="password" className="text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-emerald-300 focus:bg-white"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isSubmitting ? "Signing in..." : "Sign In"}
+          </button>
+          {error ? <p className="text-sm text-rose-700">{error}</p> : null}
+        </form>
+
+        <p className="mt-5 text-sm text-slate-600">
+          New here?{" "}
+          <Link href="/register" className="font-semibold text-emerald-700 hover:text-emerald-600">
+            Create an account
+          </Link>
+        </p>
+      </section>
     </main>
   );
 }

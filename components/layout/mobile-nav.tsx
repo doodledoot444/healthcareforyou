@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/progress", label: "Progress" },
-  { href: "/achievements", label: "Wins" },
-  { href: "/profile", label: "Profile" },
+  { href: "/dashboard", label: "Home" },
+  { href: "/dashboard/progress", label: "Progress" },
+  { href: "/dashboard/achievements", label: "Wins" },
+  { href: "/dashboard/profile", label: "Profile" },
 ];
 
 export function MobileNav() {

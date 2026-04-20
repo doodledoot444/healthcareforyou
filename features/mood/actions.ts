@@ -1,5 +1,3 @@
-"use server";
-
 import { db } from "@/lib/db";
 import { updateMoodStreak } from "@/features/streak/service";
 import type { CreateMoodEntryInput, CreateMoodEntryResult, MoodEntry } from "./types";

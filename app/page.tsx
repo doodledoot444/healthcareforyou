@@ -1,6 +1,15 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
+import { AUTH_REDIRECT_PATH } from "@/features/auth/constants";
+import { getCurrentUser } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser) {
+    redirect(AUTH_REDIRECT_PATH);
+  }
+
   return (
     <div className="flex flex-1 items-center justify-center bg-gradient-to-b from-emerald-50 to-teal-100 px-6 py-16">
       <main className="w-full max-w-4xl rounded-3xl bg-white p-10 shadow-xl ring-1 ring-teal-100 md:p-14">

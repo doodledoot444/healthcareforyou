@@ -2,10 +2,14 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { cache } from "react";
 import { db } from "@/lib/db";
+import { AUTH_REDIRECT_PATH } from "@/features/auth/constants";
+
+type PrismaAdapterClient = Parameters<typeof PrismaAdapter>[0];
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db as PrismaAdapterClient),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
@@ -66,10 +70,13 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
+    async redirect({ baseUrl }) {
+      return `${baseUrl}${AUTH_REDIRECT_PATH}`;
+    },
   },
 };
 
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async function getCurrentUser() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -77,4 +84,4 @@ export async function getCurrentUser() {
   }
 
   return session.user;
-}
+});
