@@ -71,7 +71,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId            String
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -79,7 +79,7 @@ model Session {
 model VerificationToken {
   id        String   @id @default(cuid())
   token     String   @unique
-  userId            String
+  userId    String
   expiresAt DateTime
   createdAt DateTime @default(now())
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -97,8 +97,8 @@ model AuthVerificationToken {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  userId            String
+  id        String           @id @default(cuid())
+  userId    String
   message   String
   type      NotificationType
   isRead    Boolean          @default(false)
@@ -111,8 +111,8 @@ model Notification {
 }
 
 model Order {
-  id        String   @id @default(cuid())
-  userId            String
+  id        String      @id @default(cuid())
+  userId    String
   address   Json
   quantity  Int
   total     Int
