@@ -1,0 +1,50 @@
+[
+  {
+    "id": "breathing-basics",
+    "title": "Breathing Basics for Calm Days",
+    "summary": "A short read on using breathwork to reset mood and focus.",
+    "content": "Conscious breathing is one of the fastest ways to regulate your nervous system. When you feel tension rising, try box breathing: inhale for 4 counts, hold for 4, exhale for 4, hold for 4. Repeat this cycle three times and notice the shift.",
+    "category": "Mindfulness",
+    "readingTimeMinutes": 3
+  },
+  {
+    "id": "habit-stacking",
+    "title": "How Habit Stacking Rewires Your Day",
+    "summary": "Link new habits to existing ones for effortless behaviour change.",
+    "content": "Habit stacking works by attaching a new behaviour to an established routine. After your morning coffee, meditate for two minutes. After your evening meal, write one journal line. The existing habit acts as a cue, reducing the friction of starting.",
+    "category": "Self Improvement",
+    "readingTimeMinutes": 4
+  },
+  {
+    "id": "sleep-quality",
+    "title": "Five Small Changes for Better Sleep",
+    "summary": "Simple, evidence-backed adjustments that improve sleep quality.",
+    "content": "Consistent wake times, dimmed lighting after 8 pm, no screens in the final hour, a cool bedroom, and a brief gratitude note before bed. Each change is small alone, but together they shift your sleep architecture toward deeper rest.",
+    "category": "Wellness",
+    "readingTimeMinutes": 4
+  },
+  {
+    "id": "micro-exercise",
+    "title": "The Case for Micro-Exercise",
+    "summary": "Short bursts of movement throughout the day outperform single gym sessions.",
+    "content": "Research shows that three ten-minute walks produce similar cardiovascular benefits to one thirty-minute walk. Breaking up sedentary blocks also improves insulin sensitivity and mental clarity. A stretch after every hour of sitting is a practical starting point.",
+    "category": "Fitness",
+    "readingTimeMinutes": 3
+  },
+  {
+    "id": "journaling-science",
+    "title": "Why Journaling Works: The Science",
+    "summary": "What happens in your brain when you write down your thoughts.",
+    "content": "Expressive writing activates the prefrontal cortex, reducing the emotional charge of difficult memories. Studies show that people who journal about stressful events have fewer GP visits and lower cortisol levels. Even five minutes of freewriting matters.",
+    "category": "Mental Health",
+    "readingTimeMinutes": 4
+  },
+  {
+    "id": "digital-rest",
+    "title": "Digital Rest Is Real Rest",
+    "summary": "Why your brain needs offline time to consolidate what you learn.",
+    "content": "Default mode network activity, the brain's rest state, consolidates learning, supports creativity, and regulates emotion. Constant notifications interrupt this process. A twenty-minute phone-free walk activates deeper restoration than passive scrolling.",
+    "category": "Mental Health",
+    "readingTimeMinutes": 3
+  }
+]

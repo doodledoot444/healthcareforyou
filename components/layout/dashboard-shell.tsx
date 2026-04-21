@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 const dashboardLinks = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/explore", label: "Explore" },
+  { href: "/dashboard/stories", label: "Stories" },
   { href: "/dashboard/progress", label: "Progress" },
   { href: "/dashboard/achievements", label: "Achievements" },
   { href: "/dashboard/journal", label: "Journal" },

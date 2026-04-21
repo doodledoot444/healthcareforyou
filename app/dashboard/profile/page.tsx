@@ -10,12 +10,12 @@ export default async function DashboardProfilePage() {
     redirect("/login");
   }
 
-  const userRecord = await db.user.findUnique({
-    where: { id: currentUser.id },
-    select: {
-      createdAt: true,
-    },
-  });
+  const userRecord = await db.user
+    .findUnique({
+      where: { id: currentUser.id },
+      select: { createdAt: true },
+    })
+    .catch(() => null);
 
   const displayName = currentUser.name || "Not set";
   const displayEmail = currentUser.email || "Not set";

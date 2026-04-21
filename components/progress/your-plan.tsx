@@ -1,12 +1,18 @@
 import type { Plan } from "@/features/plans/types";
 import { PlanCard } from "./plan-card";
 
+interface ToggleItemParams {
+  planId: string;
+  itemId: string;
+}
+
 interface YourPlanProps {
   activePlan: Plan | null;
   plans: Plan[];
+  onToggleItem?: (params: ToggleItemParams) => void;
 }
 
-export function YourPlan({ activePlan, plans }: YourPlanProps) {
+export function YourPlan({ activePlan, plans, onToggleItem }: YourPlanProps) {
   if (!activePlan || plans.length === 0) {
     return (
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -25,19 +31,21 @@ export function YourPlan({ activePlan, plans }: YourPlanProps) {
 
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Active plan</p>
-        <PlanCard plan={activePlan} />
+        <PlanCard plan={activePlan} onToggleItem={onToggleItem} />
       </div>
 
-      <div className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Other plans</p>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {plans
-            .filter((plan) => plan.id !== activePlan.id)
-            .map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
-            ))}
+      {plans.filter((plan) => plan.id !== activePlan.id).length > 0 ? (
+        <div className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Other plans</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {plans
+              .filter((plan) => plan.id !== activePlan.id)
+              .map((plan) => (
+                <PlanCard key={plan.id} plan={plan} onToggleItem={onToggleItem} />
+              ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </section>
   );
 }

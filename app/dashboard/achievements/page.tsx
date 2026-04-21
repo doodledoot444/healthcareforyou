@@ -11,7 +11,7 @@ export default async function DashboardAchievementsPage() {
     redirect("/login");
   }
 
-  const moods = await getRecentMoods(currentUser.id, 60);
+  const moods = await getRecentMoods(currentUser.id, 60).catch(() => []);
   const achievements = evaluateAchievements(moods);
 
   return (

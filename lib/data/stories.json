@@ -1,0 +1,42 @@
+[
+  {
+    "id": "small-wins",
+    "title": "Small Wins Matter",
+    "summary": "How tiny daily wins compound into big emotional progress.",
+    "content": "Maya started tracking one small win per day in a notebook. After ninety days she had ninety wins written down. Reading them back took her less than ten minutes but the effect was profound. She could see a person who kept showing up, even on hard days.",
+    "author": "Editorial",
+    "readingTimeMinutes": 2
+  },
+  {
+    "id": "slow-growth",
+    "title": "Slow Growth Is Still Growth",
+    "summary": "A reminder that consistency beats intensity over time.",
+    "content": "A bamboo seed spends years underground developing its root system. Most people only see the visible growth and call it overnight success. Your consistent daily effort is root growth. Trust the process underneath.",
+    "author": "Editorial",
+    "readingTimeMinutes": 2
+  },
+  {
+    "id": "rest-is-productive",
+    "title": "Rest Is Part of the Work",
+    "summary": "The athletes who recover well are the ones who perform consistently.",
+    "content": "The limiting factor in improvement is often recovery quality, not workload volume. The same principle applies to mental performance. Deep work requires deep rest. Scheduling recovery is strategy, not laziness.",
+    "author": "Editorial",
+    "readingTimeMinutes": 2
+  },
+  {
+    "id": "identity-first",
+    "title": "Identity Before Outcome",
+    "summary": "Change your identity first and the behaviour follows naturally.",
+    "content": "Every action is a vote for the person you believe you are. Moving from 'I am trying' to 'I am' changes moment-to-moment decisions. Cast enough votes and the identity solidifies.",
+    "author": "Editorial",
+    "readingTimeMinutes": 2
+  },
+  {
+    "id": "one-percent",
+    "title": "The One Percent Principle",
+    "summary": "Getting 1% better each day produces remarkable results across a year.",
+    "content": "One percent daily improvement compounds dramatically over time. The question is not whether today was perfect, but whether it nudged you forward.",
+    "author": "Editorial",
+    "readingTimeMinutes": 2
+  }
+]

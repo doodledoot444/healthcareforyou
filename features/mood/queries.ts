@@ -27,42 +27,50 @@ export async function getRecentMoods(userId: string, days = 30): Promise<MoodEnt
   const cutoff = new Date(today);
   cutoff.setUTCDate(today.getUTCDate() - (safeDays - 1));
 
-  const entries = await db.moodEntry.findMany({
-    where: {
-      userId,
-      entryDate: {
-        gte: cutoff,
+  try {
+    const entries = await db.moodEntry.findMany({
+      where: {
+        userId,
+        entryDate: {
+          gte: cutoff,
+        },
       },
-    },
-    orderBy: { entryDate: "asc" },
-  });
+      orderBy: { entryDate: "asc" },
+    });
 
-  return entries.map(toMoodEntry);
+    return entries.map(toMoodEntry);
+  } catch {
+    return [];
+  }
 }
 
 export async function getLatestMoodEntry(userId: string): Promise<MoodEntry | null> {
-  const entry = await db.moodEntry.findFirst({
-    where: { userId },
-    orderBy: { entryDate: "desc" },
-  });
+  try {
+    const entry = await db.moodEntry.findFirst({
+      where: { userId },
+      orderBy: { entryDate: "desc" },
+    });
 
-  return entry ? toMoodEntry(entry) : null;
+    return entry ? toMoodEntry(entry) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getMoodStreakSnapshot(userId: string): Promise<MoodStreakSnapshot> {
-  const streak = await db.moodStreak.findUnique({ where: { userId } });
+  try {
+    const streak = await db.moodStreak.findUnique({ where: { userId } });
 
-  if (!streak) {
+    if (!streak) {
+      return { currentStreak: 0, longestStreak: 0, lastEntryDate: null };
+    }
+
     return {
-      currentStreak: 0,
-      longestStreak: 0,
-      lastEntryDate: null,
+      currentStreak: streak.currentStreak,
+      longestStreak: streak.longestStreak,
+      lastEntryDate: streak.lastEntryDate ? streak.lastEntryDate.toISOString() : null,
     };
+  } catch {
+    return { currentStreak: 0, longestStreak: 0, lastEntryDate: null };
   }
-
-  return {
-    currentStreak: streak.currentStreak,
-    longestStreak: streak.longestStreak,
-    lastEntryDate: streak.lastEntryDate ? streak.lastEntryDate.toISOString() : null,
-  };
 }

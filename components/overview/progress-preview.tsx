@@ -1,24 +1,11 @@
-import type { Plan } from "@/features/plans/types";
+"use client";
+
+import { usePlans } from "@/hooks/use-plans";
 import { PreviewCard } from "@/components/shared/preview-card";
 import { ProgressBar } from "@/components/shared/progress-bar";
 
-interface ProgressPreviewProps {
-  activePlan: Plan | null;
-}
-
-export function ProgressPreview({ activePlan }: ProgressPreviewProps) {
-  if (!activePlan) {
-    return (
-      <PreviewCard
-        title="Progress"
-        description="Track your active plan and completion percentage."
-        actionHref="/dashboard/progress"
-        actionLabel="Open"
-      >
-        <p className="mt-4 text-sm text-slate-600">No active plans yet. Create your first plan to get started.</p>
-      </PreviewCard>
-    );
-  }
+export function ProgressPreview() {
+  const { activePlan, isLoading } = usePlans();
 
   return (
     <PreviewCard
@@ -27,14 +14,22 @@ export function ProgressPreview({ activePlan }: ProgressPreviewProps) {
       actionHref="/dashboard/progress"
       actionLabel="Open"
     >
-      <div className="mt-4 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-slate-900">{activePlan.title}</p>
-          <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">{activePlan.level}</span>
-        </div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">{activePlan.category}</p>
-        <ProgressBar percentage={activePlan.progressPercentage} />
-        <p className="text-sm text-slate-600">{activePlan.progressPercentage}% complete</p>
+      <div className="mt-4">
+        {isLoading ? (
+          <p className="text-sm text-slate-500">Loading…</p>
+        ) : !activePlan ? (
+          <p className="text-sm text-slate-600">No active plans yet. Create your first plan to get started.</p>
+        ) : (
+          <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold text-slate-900">{activePlan.title}</p>
+              <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">{activePlan.level}</span>
+            </div>
+            <p className="text-xs uppercase tracking-wide text-slate-500">{activePlan.category}</p>
+            <ProgressBar percentage={activePlan.progressPercentage} />
+            <p className="text-sm text-slate-600">{activePlan.progressPercentage}% complete</p>
+          </div>
+        )}
       </div>
     </PreviewCard>
   );

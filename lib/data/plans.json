@@ -1,0 +1,41 @@
+[
+  {
+    "id": "reading",
+    "title": "Daily Reading Routine",
+    "category": "Reading",
+    "description": "Build a consistent reading habit for 20 minutes each day.",
+    "items": [
+      { "id": "reading-1", "label": "Read for 20 minutes" },
+      { "id": "reading-2", "label": "Write one sentence takeaway" },
+      { "id": "reading-3", "label": "No phone during reading time" },
+      { "id": "reading-4", "label": "Read before 9 pm" },
+      { "id": "reading-5", "label": "Finish one chapter" }
+    ]
+  },
+  {
+    "id": "self-improvement",
+    "title": "Self Improvement Sprint",
+    "category": "Self Improvement",
+    "description": "Stay consistent with your growth routine and maintain momentum.",
+    "items": [
+      { "id": "si-1", "label": "Review yesterday's goals" },
+      { "id": "si-2", "label": "Complete one focused work block" },
+      { "id": "si-3", "label": "Learn one new thing today" },
+      { "id": "si-4", "label": "Reflect on one win" },
+      { "id": "si-5", "label": "Plan tomorrow evening" }
+    ]
+  },
+  {
+    "id": "mindfulness",
+    "title": "Mindfulness Check-ins",
+    "category": "Mindfulness",
+    "description": "Practice mindful reflection and emotional awareness.",
+    "items": [
+      { "id": "mind-1", "label": "5-minute morning breath practice" },
+      { "id": "mind-2", "label": "Midday body scan (2 minutes)" },
+      { "id": "mind-3", "label": "Log your mood today" },
+      { "id": "mind-4", "label": "Phone-free meal" },
+      { "id": "mind-5", "label": "Evening gratitude note" }
+    ]
+  }
+]

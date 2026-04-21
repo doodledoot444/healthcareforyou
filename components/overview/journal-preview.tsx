@@ -1,10 +1,10 @@
 "use client";
 
 import { PreviewCard } from "@/components/shared/preview-card";
-import { useJournalEntries } from "@/components/journal/use-journal-entries";
+import { useJournal } from "@/hooks/use-journal";
 
 export function JournalPreview() {
-  const { recentEntries, isHydrated } = useJournalEntries();
+  const { recentEntries, isLoading } = useJournal();
 
   return (
     <PreviewCard
@@ -14,8 +14,8 @@ export function JournalPreview() {
       actionLabel="Open"
     >
       <div className="mt-4">
-        {!isHydrated ? (
-          <p className="text-sm text-slate-600">Loading journal preview...</p>
+        {isLoading ? (
+          <p className="text-sm text-slate-500">Loading…</p>
         ) : recentEntries.length === 0 ? (
           <p className="text-sm text-slate-600">No entries yet. Start your journal today.</p>
         ) : (
