@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { DashboardSectionShell } from "@/components/shared/section-shell";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -27,11 +28,7 @@ export default async function DashboardProfilePage() {
     : "Unknown";
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <header>
-        <h2 className="text-xl font-semibold text-slate-900">Profile</h2>
-        <p className="mt-1 text-sm text-slate-600">Review your account details.</p>
-      </header>
+    <DashboardSectionShell title="Profile" description="Review your account details.">
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-slate-700">
         <dl className="space-y-4">
           <div>
@@ -48,6 +45,6 @@ export default async function DashboardProfilePage() {
           </div>
         </dl>
       </div>
-    </section>
+    </DashboardSectionShell>
   );
 }

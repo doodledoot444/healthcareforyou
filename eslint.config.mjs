@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "generated/prisma/**",
+    "prisma/client/**",
+    "db-check.js",
   ]),
 ]);
 

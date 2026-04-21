@@ -2,6 +2,7 @@ import { evaluateAchievements } from "@/features/achievements/service";
 import { getRecentMoods } from "@/features/mood/queries";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { DashboardSectionShell } from "@/components/shared/section-shell";
 
 export default async function DashboardAchievementsPage() {
   const currentUser = await getCurrentUser();
@@ -14,11 +15,7 @@ export default async function DashboardAchievementsPage() {
   const achievements = evaluateAchievements(moods);
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <header>
-        <h2 className="text-xl font-semibold text-slate-900">Achievements</h2>
-        <p className="mt-1 text-sm text-slate-600">Celebrate consistency and growth milestones.</p>
-      </header>
+    <DashboardSectionShell title="Achievements" description="Celebrate consistency and growth milestones.">
       <ul className="space-y-3">
         {achievements.map((item) => (
           <li key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -28,6 +25,6 @@ export default async function DashboardAchievementsPage() {
           </li>
         ))}
       </ul>
-    </section>
+    </DashboardSectionShell>
   );
 }

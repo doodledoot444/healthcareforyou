@@ -1,5 +1,8 @@
 import { MoodChart } from "@/components/mood/mood-chart";
+import { YourPlan } from "@/components/progress/your-plan";
+import { DashboardSectionShell } from "@/components/shared/section-shell";
 import { getRecentMoods } from "@/features/mood/queries";
+import { getPlansSnapshot } from "@/features/plans/service";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -10,15 +13,17 @@ export default async function DashboardProgressPage() {
     redirect("/login");
   }
 
-  const moods = await getRecentMoods(currentUser.id, 60);
+  const [moods, planSnapshot] = await Promise.all([getRecentMoods(currentUser.id, 60), getPlansSnapshot(currentUser.id)]);
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <header>
-        <h2 className="text-xl font-semibold text-slate-900">Progress Tracking</h2>
-        <p className="mt-1 text-sm text-slate-600">Monitor your mood trend across the last 60 days.</p>
-      </header>
-      <MoodChart entries={moods} />
-    </section>
+    <div className="space-y-4">
+      <YourPlan activePlan={planSnapshot.activePlan} plans={planSnapshot.plans} />
+      <DashboardSectionShell
+        title="Mood Trend"
+        description="Monitor your mood pattern across the last 60 days."
+      >
+        <MoodChart entries={moods} />
+      </DashboardSectionShell>
+    </div>
   );
 }

@@ -2,9 +2,9 @@ import Link from "next/link";
 
 const links = [
   { href: "/dashboard", label: "Home" },
+  { href: "/dashboard/explore", label: "Explore" },
   { href: "/dashboard/progress", label: "Progress" },
-  { href: "/dashboard/achievements", label: "Wins" },
-  { href: "/dashboard/profile", label: "Profile" },
+  { href: "/dashboard/journal", label: "Journal" },
 ];
 
 export function MobileNav() {
