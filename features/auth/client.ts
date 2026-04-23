@@ -1,5 +1,7 @@
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { AUTH_REDIRECT_PATH } from "./constants";
+
+const LOGOUT_EVENT_KEY = "jh-tracker:logout";
 
 export interface RegisterPayload {
   name: string;
@@ -34,4 +36,37 @@ export async function signInWithCredentials(email: string, password: string) {
     redirect: false,
     callbackUrl: AUTH_REDIRECT_PATH,
   });
+}
+
+export async function logoutUser(callbackUrl = "/") {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => null);
+
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(LOGOUT_EVENT_KEY, String(Date.now()));
+  }
+
+  await signOut({
+    callbackUrl,
+    redirect: true,
+  });
+}
+
+export function onCrossTabLogout(callback: () => void): () => void {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const listener = (event: StorageEvent) => {
+    if (event.key === LOGOUT_EVENT_KEY) {
+      callback();
+    }
+  };
+
+  window.addEventListener("storage", listener);
+  return () => {
+    window.removeEventListener("storage", listener);
+  };
 }

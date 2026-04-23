@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { buildMoodAnalytics } from "@/features/analytics/service";
 import { getRecentMoods } from "@/features/mood/queries";
 import { getCurrentUser } from "@/lib/auth";
+import { withValidation } from "@/lib/validate";
+import { analyticsQuerySchema } from "@/lib/validators/content";
 
-export async function GET() {
+export const GET = withValidation({ query: analyticsQuerySchema }, async (_request, { query }) => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -16,8 +18,8 @@ export async function GET() {
     );
   }
 
-  const moods = await getRecentMoods(currentUser.id, 60);
+  const moods = await getRecentMoods(currentUser.id, query.days);
   const data = buildMoodAnalytics(moods);
 
   return NextResponse.json({ data });
-}
+});

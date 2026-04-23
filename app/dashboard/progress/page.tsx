@@ -10,7 +10,10 @@ export default function DashboardProgressPage() {
   return (
     <div className="space-y-4">
       {isLoading ? (
-        <DashboardSectionShell title="Your Plan" description="Loading your plans…">
+        <DashboardSectionShell
+          title="Progress"
+          description="Loading your adaptive habit momentum dashboard…"
+        >
           <p className="text-sm text-slate-500">Loading…</p>
         </DashboardSectionShell>
       ) : (

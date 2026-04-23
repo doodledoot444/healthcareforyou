@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { LogoutButton } from "@/components/auth/logout-button";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard/analytics", label: "Analytics" },
   { href: "/dashboard/explore", label: "Explore" },
   { href: "/dashboard/progress", label: "Progress" },
   { href: "/dashboard/achievements", label: "Achievements" },
@@ -24,6 +26,9 @@ export function Navbar() {
               </Link>
             </li>
           ))}
+          <li>
+            <LogoutButton className="rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900" />
+          </li>
         </ul>
       </div>
     </nav>

@@ -2,14 +2,10 @@ import { NextResponse } from "next/server";
 import { createMoodEntry, MoodEntryValidationError } from "@/features/mood/actions";
 import { getLatestMoodEntry, getMoodStreakSnapshot, getRecentMoods } from "@/features/mood/queries";
 import { getCurrentUser } from "@/lib/auth";
+import { withValidation } from "@/lib/validate";
+import { moodBodySchema, moodQuerySchema } from "@/lib/validators/mood";
 
-interface MoodPostBody {
-  moodScore?: number;
-  score?: number;
-  note?: string;
-}
-
-export async function GET(request: Request) {
+export const GET = withValidation({ query: moodQuerySchema }, async (_request, { query }) => {
   try {
     const currentUser = await getCurrentUser();
 
@@ -24,12 +20,10 @@ export async function GET(request: Request) {
       );
     }
 
-    const url = new URL(request.url);
-    const daysParam = Number(url.searchParams.get("days") ?? 7);
     const userId = currentUser.id;
 
     const [entries, latestEntry, streak] = await Promise.all([
-      getRecentMoods(userId, Number.isFinite(daysParam) ? daysParam : 7),
+      getRecentMoods(userId, query.days),
       getLatestMoodEntry(userId),
       getMoodStreakSnapshot(userId),
     ]);
@@ -55,9 +49,9 @@ export async function GET(request: Request) {
       { status: 500 },
     );
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withValidation({ body: moodBodySchema }, async (_request, { body }) => {
   try {
     const currentUser = await getCurrentUser();
 
@@ -72,7 +66,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = (await request.json()) as MoodPostBody;
     const userId = currentUser.id;
     const moodScore = typeof body.moodScore === "number" ? body.moodScore : body.score;
 
@@ -128,4 +121,4 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
+});

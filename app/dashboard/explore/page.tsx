@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useArticleOfDay } from "@/hooks/use-article-of-day";
 import { useStories } from "@/hooks/use-stories";
 import { DashboardSectionShell } from "@/components/shared/section-shell";
@@ -38,15 +39,25 @@ export default function DashboardExplorePage() {
           {storiesQuery.isLoading ? (
             <p className="mt-2 text-sm text-slate-500">Loading…</p>
           ) : (
-            <ul className="mt-2 space-y-4">
-              {(storiesQuery.data?.stories ?? []).map((story) => (
-                <li key={story.id}>
-                  <p className="text-sm font-medium text-slate-900">{story.title}</p>
-                  <p className="mt-1 text-sm text-slate-600">{story.summary}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{story.content}</p>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-2 space-y-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {(storiesQuery.data?.stories ?? []).slice(0, 6).map((story, index) => (
+                  <div key={story.id} className="rounded-lg border border-slate-200 bg-white p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                      Chapter {index + 1}
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-900">{story.title}</p>
+                    <p className="mt-1 text-xs text-slate-600">{story.summary}</p>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/dashboard/stories"
+                className="inline-flex rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
+              >
+                Open Interactive Reading Board
+              </Link>
+            </div>
           )}
         </article>
       </div>

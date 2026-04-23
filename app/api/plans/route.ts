@@ -1,7 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import type { NextRequest } from "next/server";
+import { getAuthenticatedUserId } from "@/lib/auth";
 import plansJson from "@/lib/data/plans.json";
 import { getCompletedItems } from "@/lib/store";
+import { withValidation } from "@/lib/validate";
 import type { Plan, PlanLevel } from "@/features/plans/types";
 import type { PlanSeed, PlansPayload } from "@/lib/api/contracts";
 import { apiError, apiSuccess } from "@/lib/api/response";
@@ -19,14 +20,14 @@ function getPlanLevel(progressPercentage: number): PlanLevel {
  * GET /api/plans
  * Returns all plans with item completion state and derived progress for the current user.
  */
-export async function GET() {
-  const session = await getServerSession(authOptions);
+export const GET = withValidation({}, async (request: NextRequest) => {
+  const userId = await getAuthenticatedUserId(request);
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return apiError("Unauthorized", 401);
   }
 
-  const completedItems = getCompletedItems(session.user.id);
+  const completedItems = await getCompletedItems(userId);
 
   const plans: Plan[] = planSeeds.map((template) => {
     const items = template.items.map((item) => ({
@@ -52,4 +53,4 @@ export async function GET() {
   const activePlan = plans.find((p) => p.progressPercentage < 100) ?? plans[0] ?? null;
 
   return apiSuccess<PlansPayload>({ plans, activePlan });
-}
+});

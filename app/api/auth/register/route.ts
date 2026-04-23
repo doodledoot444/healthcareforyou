@@ -1,37 +1,12 @@
 import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { withValidation } from "@/lib/validate";
+import { registerBodySchema } from "@/lib/validators/auth";
 
-interface RegisterBody {
-  name?: string;
-  email?: string;
-  password?: string;
-}
-
-export async function POST(request: Request) {
+export const POST = withValidation({ body: registerBodySchema }, async (_request, { body }) => {
   try {
-    const body = (await request.json()) as RegisterBody;
-    const name = body.name?.trim();
-    const email = body.email?.trim().toLowerCase();
-    const password = body.password;
-
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        {
-          error: "Name, email, and password are required.",
-        },
-        { status: 400 },
-      );
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json(
-        {
-          error: "Password must be at least 8 characters.",
-        },
-        { status: 400 },
-      );
-    }
+    const { name, email, password } = body;
 
     const existingUser = await db.user.findUnique({
       where: { email },
@@ -68,4 +43,4 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
+});

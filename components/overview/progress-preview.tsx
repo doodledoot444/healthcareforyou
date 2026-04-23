@@ -1,11 +1,11 @@
 "use client";
 
-import { usePlans } from "@/hooks/use-plans";
+import { useDashboardData } from "@/providers/dashboard-data-provider";
 import { PreviewCard } from "@/components/shared/preview-card";
 import { ProgressBar } from "@/components/shared/progress-bar";
 
 export function ProgressPreview() {
-  const { activePlan, isLoading } = usePlans();
+  const { activePlan, isPlansLoading } = useDashboardData();
 
   return (
     <PreviewCard
@@ -15,7 +15,7 @@ export function ProgressPreview() {
       actionLabel="Open"
     >
       <div className="mt-4">
-        {isLoading ? (
+        {isPlansLoading ? (
           <p className="text-sm text-slate-500">Loading…</p>
         ) : !activePlan ? (
           <p className="text-sm text-slate-600">No active plans yet. Create your first plan to get started.</p>

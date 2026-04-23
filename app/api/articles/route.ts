@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import articlesJson from "@/lib/data/articles.json";
-import { apiError, apiSuccess } from "@/lib/api/response";
+import { apiSuccess } from "@/lib/api/response";
+import { withValidation } from "@/lib/validate";
+import { articlesQuerySchema } from "@/lib/validators/content";
 import type { ArticleDto, ArticleOfDayPayload, ArticlesPayload } from "@/lib/api/contracts";
 
 const articles = articlesJson as ArticleDto[];
@@ -10,12 +12,8 @@ const articles = articlesJson as ArticleDto[];
  * - type=day (default): deterministic article rotation every 20 minutes
  * - type=all: returns full article dataset
  */
-export function GET(request: NextRequest) {
-  const type = request.nextUrl.searchParams.get("type") ?? "day";
-
-  if (type !== "day" && type !== "all") {
-    return apiError("Invalid type query. Use type=day or type=all.", 400);
-  }
+export const GET = withValidation({ query: articlesQuerySchema }, async (_request: NextRequest, { query }) => {
+  const type = query.type;
 
   if (type === "all") {
     return apiSuccess<ArticlesPayload>({ articles });
@@ -33,4 +31,4 @@ export function GET(request: NextRequest) {
     rotatesInMs,
     nextRotationAt: new Date(nextWindowMs).toISOString(),
   });
-}
+});

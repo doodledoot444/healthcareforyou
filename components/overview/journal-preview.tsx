@@ -1,10 +1,11 @@
 "use client";
 
 import { PreviewCard } from "@/components/shared/preview-card";
-import { useJournal } from "@/hooks/use-journal";
+import { useDashboardData } from "@/providers/dashboard-data-provider";
 
 export function JournalPreview() {
-  const { recentEntries, isLoading } = useJournal();
+  const { journalEntries, isJournalLoading } = useDashboardData();
+  const recentEntries = journalEntries.slice(0, 3);
 
   return (
     <PreviewCard
@@ -14,7 +15,7 @@ export function JournalPreview() {
       actionLabel="Open"
     >
       <div className="mt-4">
-        {isLoading ? (
+        {isJournalLoading ? (
           <p className="text-sm text-slate-500">Loading…</p>
         ) : recentEntries.length === 0 ? (
           <p className="text-sm text-slate-600">No entries yet. Start your journal today.</p>

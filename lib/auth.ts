@@ -1,12 +1,25 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { getServerSession, type NextAuthOptions } from "next-auth";
+import { getToken } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextRequest } from "next/server";
 import { cache } from "react";
 import { db } from "@/lib/db";
 import { AUTH_REDIRECT_PATH } from "@/features/auth/constants";
 
 type PrismaAdapterClient = Parameters<typeof PrismaAdapter>[0];
+
+export const PUBLIC_PAGE_PATHS = ["/", "/login", "/register"] as const;
+export const PUBLIC_API_PREFIXES = ["/api/auth", "/api/articles", "/api/stories"] as const;
+
+export function isPublicPagePath(pathname: string) {
+  return PUBLIC_PAGE_PATHS.includes(pathname as (typeof PUBLIC_PAGE_PATHS)[number]);
+}
+
+export function isPublicApiPath(pathname: string) {
+  return PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db as PrismaAdapterClient),
@@ -85,3 +98,8 @@ export const getCurrentUser = cache(async function getCurrentUser() {
 
   return session.user;
 });
+
+export async function getAuthenticatedUserId(request: NextRequest): Promise<string | null> {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  return typeof token?.sub === "string" ? token.sub : null;
+}

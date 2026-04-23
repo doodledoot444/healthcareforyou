@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getMoodStreakSnapshot } from "@/features/mood/queries";
 import { getCurrentUser } from "@/lib/auth";
+import { withValidation } from "@/lib/validate";
 
-export async function GET() {
+export const GET = withValidation({}, async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -18,4 +19,4 @@ export async function GET() {
   const data = await getMoodStreakSnapshot(currentUser.id);
 
   return NextResponse.json({ data });
-}
+});
